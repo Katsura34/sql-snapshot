@@ -83,23 +83,37 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-50 p-8">
       <div className="mx-auto max-w-7xl">
-        <div className="mb-8 flex items-center justify-between">
-          <h1 className="text-4xl font-bold tracking-tight text-gray-900">Inventory</h1>
-          <div className="flex gap-2">
-            <Button onClick={() => setIsCsvImportOpen(true)} variant="outline">
+        <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="space-y-1">
+            <h1 className="text-4xl font-bold tracking-tight text-gray-900">
+              Inventory Management
+            </h1>
+            <p className="text-sm text-gray-500">
+              Manage your products and stock levels efficiently
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <Button 
+              onClick={() => setIsCsvImportOpen(true)} 
+              variant="outline"
+              className="bg-white/50 backdrop-blur-sm hover:bg-white/80 transition-all duration-200"
+            >
               <Upload className="mr-2 h-4 w-4" />
               Import CSV
             </Button>
-            <Button onClick={() => setIsCreateDialogOpen(true)} className="btn-primary">
+            <Button 
+              onClick={() => setIsCreateDialogOpen(true)}
+              className="bg-purple-600 hover:bg-purple-700 text-white transition-all duration-200"
+            >
               <Plus className="mr-2 h-4 w-4" />
               Create Item
             </Button>
           </div>
         </div>
 
-        <div className="mb-8 flex gap-4">
+        <div className="mb-8 flex flex-col gap-4 sm:flex-row">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
             <Input
@@ -107,7 +121,7 @@ const Index = () => {
               placeholder="Search items..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="glass-input pl-10"
+              className="pl-10 bg-white/50 backdrop-blur-sm border-gray-200 focus:border-purple-500 focus:ring-purple-500 transition-all duration-200"
             />
           </div>
         </div>
@@ -124,12 +138,18 @@ const Index = () => {
         </div>
 
         <div className="mt-8 flex items-center justify-between">
-          <Button variant="outline" className="btn-secondary">
+          <Button 
+            variant="outline" 
+            className="bg-white/50 backdrop-blur-sm hover:bg-white/80 transition-all duration-200"
+          >
             <ChevronLeft className="mr-2 h-4 w-4" />
             Previous
           </Button>
           <span className="text-sm text-gray-600">Page 1 of 1</span>
-          <Button variant="outline" className="btn-secondary">
+          <Button 
+            variant="outline"
+            className="bg-white/50 backdrop-blur-sm hover:bg-white/80 transition-all duration-200"
+          >
             Next
             <ChevronRight className="ml-2 h-4 w-4" />
           </Button>

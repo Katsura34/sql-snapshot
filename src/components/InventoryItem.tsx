@@ -12,7 +12,7 @@ interface InventoryItemProps {
     price: number;
     image: string;
   };
-  onUpdate: (id: number) => void;
+  onUpdate: (id: number, data: any) => void;
   onDelete: (id: number) => void;
 }
 
@@ -20,29 +20,33 @@ export const InventoryItem = ({ item, onUpdate, onDelete }: InventoryItemProps) 
   const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false);
 
   return (
-    <Card className="inventory-card animate-scale-in">
-      <div className="aspect-square overflow-hidden rounded-md">
+    <Card className="group overflow-hidden rounded-xl border border-gray-200 bg-white/50 p-4 backdrop-blur-sm transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/5 hover:-translate-y-1">
+      <div className="aspect-square overflow-hidden rounded-lg bg-gray-100">
         <img
           src={item.image}
           alt={item.name}
-          className="h-full w-full object-cover transition-transform duration-300 hover:scale-105"
+          className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
         />
       </div>
-      <div className="mt-4">
+      <div className="mt-4 space-y-2">
         <h3 className="font-semibold text-gray-900">{item.name}</h3>
-        <div className="mt-1 flex items-center justify-between text-sm text-gray-600">
-          <span>Quantity: {item.quantity}</span>
-          <span>${item.price.toFixed(2)}</span>
+        <div className="flex items-center justify-between text-sm">
+          <span className="rounded-full bg-purple-100 px-2.5 py-0.5 text-purple-800">
+            Stock: {item.quantity}
+          </span>
+          <span className="font-medium text-gray-900">
+            ${item.price.toFixed(2)}
+          </span>
         </div>
-        <div className="mt-4 flex gap-2">
+        <div className="flex gap-2 pt-2">
           <Button
             variant="outline"
             size="sm"
-            className="flex-1"
+            className="flex-1 hover:bg-purple-50 hover:text-purple-700"
             onClick={() => setIsUpdateDialogOpen(true)}
           >
             <Edit2 className="mr-2 h-4 w-4" />
-            Update
+            Edit
           </Button>
           <Button
             variant="outline"
@@ -61,7 +65,7 @@ export const InventoryItem = ({ item, onUpdate, onDelete }: InventoryItemProps) 
         open={isUpdateDialogOpen}
         onOpenChange={setIsUpdateDialogOpen}
         onSubmit={() => {
-          onUpdate(item.id);
+          onUpdate(item.id, item);
           setIsUpdateDialogOpen(false);
         }}
       />
