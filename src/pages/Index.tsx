@@ -1,15 +1,16 @@
 import { useState } from "react";
-import { Plus, Search, ChevronLeft, ChevronRight } from "lucide-react";
+import { Plus, Search, ChevronLeft, ChevronRight, Upload } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card } from "@/components/ui/card";
 import { InventoryItem } from "@/components/InventoryItem";
 import { CreateItemDialog } from "@/components/CreateItemDialog";
+import { CsvImportDialog } from "@/components/CsvImportDialog";
 
 const Index = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  const [isCsvImportOpen, setIsCsvImportOpen] = useState(false);
   const { toast } = useToast();
 
   // Placeholder data - will be replaced with API calls
@@ -27,15 +28,29 @@ const Index = () => {
     setIsCreateDialogOpen(false);
   };
 
+  const handleCsvImportSuccess = () => {
+    // Refresh the items list after successful import
+    toast({
+      title: "Import Complete",
+      description: "Successfully imported items from CSV",
+    });
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 p-8">
       <div className="mx-auto max-w-7xl">
         <div className="mb-8 flex items-center justify-between">
           <h1 className="text-4xl font-bold tracking-tight text-gray-900">Inventory</h1>
-          <Button onClick={() => setIsCreateDialogOpen(true)} className="btn-primary">
-            <Plus className="mr-2 h-4 w-4" />
-            Create Item
-          </Button>
+          <div className="flex gap-2">
+            <Button onClick={() => setIsCsvImportOpen(true)} variant="outline">
+              <Upload className="mr-2 h-4 w-4" />
+              Import CSV
+            </Button>
+            <Button onClick={() => setIsCreateDialogOpen(true)} className="btn-primary">
+              <Plus className="mr-2 h-4 w-4" />
+              Create Item
+            </Button>
+          </div>
         </div>
 
         <div className="mb-8 flex gap-4">
@@ -89,6 +104,12 @@ const Index = () => {
         open={isCreateDialogOpen}
         onOpenChange={setIsCreateDialogOpen}
         onSubmit={handleCreateItem}
+      />
+
+      <CsvImportDialog
+        open={isCsvImportOpen}
+        onOpenChange={setIsCsvImportOpen}
+        onImportSuccess={handleCsvImportSuccess}
       />
     </div>
   );
