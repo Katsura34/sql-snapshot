@@ -1,46 +1,25 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
- 
-@layer base {
-  :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
-  }
+/* Import Bootstrap CSS */
+@import 'bootstrap/dist/css/bootstrap.min.css';
 
-  * {
-    @apply border-border;
-  }
-
-  body {
-    @apply bg-background text-foreground antialiased;
-    font-feature-settings: "rlig" 1, "calt" 1;
-  }
+:root {
+  --background: #ffffff;
+  --foreground: #1a1a1a;
+  --border: #e5e5e5;
+  --input: #e5e5e5;
+  --ring: #1a1a1a;
 }
 
-@layer components {
-  .inventory-card {
-    @apply relative overflow-hidden rounded-lg border bg-white p-6 shadow-sm transition-all hover:shadow-md;
-    backdrop-filter: blur(10px);
-    transform: translateZ(0);
-  }
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+}
 
-  .inventory-card:hover {
-    transform: translateY(-2px) translateZ(0);
-  }
+.inventory-card {
+  transition: transform 0.2s;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
 
-  .glass-input {
-    @apply w-full rounded-md border border-gray-200 bg-white/50 px-4 py-2 text-sm backdrop-blur-sm transition-colors focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary;
-  }
-
-  .btn-primary {
-    @apply inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2;
-  }
-
-  .btn-secondary {
-    @apply inline-flex items-center justify-center rounded-md border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-900 shadow-sm transition-colors hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2;
-  }
+.inventory-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }

@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Edit2, Trash2 } from "lucide-react";
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Card, Button } from "react-bootstrap";
 import { UpdateItemDialog } from "./UpdateItemDialog";
 
 interface InventoryItemProps {
@@ -20,41 +19,42 @@ export const InventoryItem = ({ item, onUpdate, onDelete }: InventoryItemProps) 
   const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false);
 
   return (
-    <Card className="inventory-card animate-scale-in">
-      <div className="aspect-square overflow-hidden rounded-md">
-        <img
+    <Card className="inventory-card h-100">
+      <div className="ratio ratio-1x1">
+        <Card.Img
+          variant="top"
           src={item.image}
           alt={item.name}
-          className="h-full w-full object-cover transition-transform duration-300 hover:scale-105"
+          className="object-fit-cover"
         />
       </div>
-      <div className="mt-4">
-        <h3 className="font-semibold text-gray-900">{item.name}</h3>
-        <div className="mt-1 flex items-center justify-between text-sm text-gray-600">
-          <span>Quantity: {item.quantity}</span>
-          <span>${item.price.toFixed(2)}</span>
+      <Card.Body>
+        <Card.Title>{item.name}</Card.Title>
+        <div className="d-flex justify-content-between text-muted mb-3">
+          <small>Quantity: {item.quantity}</small>
+          <small>${item.price.toFixed(2)}</small>
         </div>
-        <div className="mt-4 flex gap-2">
+        <div className="d-flex gap-2">
           <Button
-            variant="outline"
+            variant="outline-primary"
             size="sm"
-            className="flex-1"
+            className="w-50"
             onClick={() => setIsUpdateDialogOpen(true)}
           >
-            <Edit2 className="mr-2 h-4 w-4" />
+            <Edit2 size={14} className="me-1" />
             Update
           </Button>
           <Button
-            variant="outline"
+            variant="outline-danger"
             size="sm"
-            className="flex-1 text-red-600 hover:bg-red-50 hover:text-red-700"
+            className="w-50"
             onClick={() => onDelete(item.id)}
           >
-            <Trash2 className="mr-2 h-4 w-4" />
+            <Trash2 size={14} className="me-1" />
             Delete
           </Button>
         </div>
-      </div>
+      </Card.Body>
 
       <UpdateItemDialog
         item={item}
