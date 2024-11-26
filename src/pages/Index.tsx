@@ -1,35 +1,50 @@
 import { useState } from "react";
-import { Container, Row, Col, Button, Form, Card } from "react-bootstrap";
+import { Container, Row, Col, Button, Form } from "react-bootstrap";
 import { Plus, Search } from "lucide-react";
-import { useToast } from "@/components/ui/use-toast";
+import { toast } from "sonner";
 import { InventoryItem } from "@/components/InventoryItem";
 import { CreateItemDialog } from "@/components/CreateItemDialog";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 const Index = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
-  const { toast } = useToast();
+  const queryClient = useQueryClient();
 
-  // Placeholder data - will be replaced with PHP/SQL API calls
-  const items = [
-    { id: 1, name: "Laptop", quantity: 5, price: 999.99, image: "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?auto=format&fit=crop&w=300&h=300" },
-    { id: 2, name: "Smartphone", quantity: 10, price: 699.99, image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=300&h=300" },
-    { id: 3, name: "Tablet", quantity: 8, price: 499.99, image: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=300&h=300" },
-  ];
+  const { data: items = [] } = useQuery({
+    queryKey: ['items'],
+    queryFn: async () => {
+      const response = await fetch('/api/items.php');
+      return response.json();
+    },
+  });
 
-  const handleCreateItem = (data: any) => {
-    // This will be replaced with a PHP API call
-    toast({
-      title: "Item Created",
-      description: `Successfully created ${data.name}`,
-    });
-    setIsCreateDialogOpen(false);
+  const handleCreateItem = async (data: any) => {
+    try {
+      const response = await fetch('/api/items.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+      
+      if (response.ok) {
+        toast.success('Item created successfully');
+        queryClient.invalidateQueries({ queryKey: ['items'] });
+        setIsCreateDialogOpen(false);
+      } else {
+        toast.error('Failed to create item');
+      }
+    } catch (error) {
+      toast.error('Error creating item');
+    }
   };
 
   return (
     <Container className="py-5">
       <div className="d-flex justify-content-between align-items-center mb-4">
-        <h1 className="h2">Inventory</h1>
+        <h1>Inventory</h1>
         <Button variant="primary" onClick={() => setIsCreateDialogOpen(true)}>
           <Plus className="me-2" size={16} />
           Create Item
@@ -50,32 +65,38 @@ const Index = () => {
       </div>
 
       <Row xs={1} sm={2} lg={3} xl={4} className="g-4">
-        {items.map((item) => (
-          <Col key={item.id}>
-            <InventoryItem
-              item={item}
-              onUpdate={(id) => {
-                toast({
-                  title: "Item Updated",
-                  description: `Successfully updated item #${id}`,
-                });
-              }}
-              onDelete={(id) => {
-                toast({
-                  title: "Item Deleted",
-                  description: `Successfully deleted item #${id}`,
-                });
-              }}
-            />
-          </Col>
-        ))}
+        {items
+          .filter((item) =>
+            item.name.toLowerCase().includes(searchQuery.toLowerCase())
+          )
+          .map((item) => (
+            <Col key={item.id}>
+              <InventoryItem
+                item={item}
+                onUpdate={async (id) => {
+                  // Update logic will be implemented here
+                  toast.success(`Updated item #${id}`);
+                }}
+                onDelete={async (id) => {
+                  try {
+                    const response = await fetch(`/api/items.php?id=${id}`, {
+                      method: 'DELETE',
+                    });
+                    
+                    if (response.ok) {
+                      toast.success('Item deleted successfully');
+                      queryClient.invalidateQueries({ queryKey: ['items'] });
+                    } else {
+                      toast.error('Failed to delete item');
+                    }
+                  } catch (error) {
+                    toast.error('Error deleting item');
+                  }
+                }}
+              />
+            </Col>
+          ))}
       </Row>
-
-      <div className="d-flex justify-content-between align-items-center mt-4">
-        <Button variant="outline-secondary" disabled>Previous</Button>
-        <span className="text-muted">Page 1 of 1</span>
-        <Button variant="outline-secondary" disabled>Next</Button>
-      </div>
 
       <CreateItemDialog
         open={isCreateDialogOpen}
