@@ -20,6 +20,52 @@ const Index = () => {
     { id: 3, name: "Tablet", quantity: 8, price: 499.99, image: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=300&h=300" },
   ];
 
+  const handleUpdateItem = async (id: number, data: any) => {
+    try {
+      const response = await fetch(`/api/update_item.php`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ ...data, id }),
+      });
+
+      if (!response.ok) throw new Error('Failed to update item');
+
+      toast({
+        title: "Item Updated",
+        description: `Successfully updated item #${id}`,
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to update item",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleDeleteItem = async (id: number) => {
+    try {
+      const response = await fetch(`/api/delete_item.php?id=${id}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) throw new Error('Failed to delete item');
+
+      toast({
+        title: "Item Deleted",
+        description: `Successfully deleted item #${id}`,
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to delete item",
+        variant: "destructive",
+      });
+    }
+  };
+
   const handleCreateItem = (data: any) => {
     toast({
       title: "Item Created",
@@ -71,18 +117,8 @@ const Index = () => {
             <InventoryItem
               key={item.id}
               item={item}
-              onUpdate={(id) => {
-                toast({
-                  title: "Item Updated",
-                  description: `Successfully updated item #${id}`,
-                });
-              }}
-              onDelete={(id) => {
-                toast({
-                  title: "Item Deleted",
-                  description: `Successfully deleted item #${id}`,
-                });
-              }}
+              onUpdate={handleUpdateItem}
+              onDelete={handleDeleteItem}
             />
           ))}
         </div>
